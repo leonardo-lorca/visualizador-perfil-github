@@ -1,21 +1,17 @@
 const BASE_URL = "https://api.github.com";
 
-export class GithubApiError extends Error {
-  constructor(status) {
-    super(`A API do GitHub respondeu com o status ${status}.`);
-    this.name = "GithubApiError";
-    this.status = status;
+export async function fetchGithubUser(userName) {
+  const response = await fetch(`${BASE_URL}/users/${userName}`);
+  if (!response.ok){
+    throw new Error('Usuário não encontrado.');
   }
+  return await response.json();
 }
 
-export async function fetchGithubUser(userName) {
-  const response = await fetch(
-    `${BASE_URL}/users/${encodeURIComponent(userName)}`,
-  );
-
+export async function fetchGithubUserRepos(userName) {
+  const response = await fetch(`${BASE_URL}/users/${userName}/repos`);
   if (!response.ok) {
-    throw new GithubApiError(response.status);
+    throw new Error('Repositórios não encontrados.');
   }
-
-  return response.json();
+  return await response.json();
 }
